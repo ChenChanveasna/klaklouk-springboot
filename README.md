@@ -28,7 +28,37 @@ A single-player traditional Khmer dice betting game built with **Java Spring Boo
 
 ---
 
-## 🚀 Getting Started
+## Requirements
+- Java JDK 17 or higher (tested on JDK 21)
+- Gradle 8.x (if using Gradle) or Maven 3.x (if using Maven)
+- IntelliJ IDEA or any Java IDE
 
-### 1️⃣ Clone the Repository
+---
+## Build & Run
 
+1. Clone the repo and cd into it.
+2. Open the project in IntelliJ IDEA or another IDE.
+3. Build the project:
+-Using Gradle:
+```/bin/bash
+./gradlew build
+```
+-Using Maven:
+```/bin/bash
+mvn clean install
+```
+4. Run the application:
+```/bin/bash
+./gradlew bootRun    # Gradle
+mvn spring-boot:run  # Maven
+```
+
+## Data Persistence
+The player’s name and balance are stored in `player.json` located in the project directory. 
+The backend automatically loads and updates this file after each game round.
+
+## Contributing
+- Create a branch for your feature: `git checkout -b feature-name`
+- Make changes and commit: `git commit -m "Add feature description"`
+- Push your branch: `git push origin feature-name`
+- Open a Pull Request for review.
