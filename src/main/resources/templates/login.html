@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kla Klouk Login</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main class="login-container">
+    <h1>Welcome to Kla Klouk</h1>
+    <form th:action="@{/start}" method="post">
+        <label>Username:</label>
+        <input type="text" name="username" required>
+        <button type="submit">Start Game</button>
+    </form>
+</main>
+</body>
+</html>

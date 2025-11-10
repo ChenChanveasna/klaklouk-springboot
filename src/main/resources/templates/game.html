@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kla Klouk Game</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script defer th:src="@{/js/game.js}"></script>
+</head>
+<body class="game-body">
+<header>
+    <h1 class="title">🎰 Khmer Kla Klouk 🎰</h1>
+    <div class="player-info">
+        <p>Player: <span th:text="${player.username}"></span></p>
+        <p>Balance: <span id="balance" th:text="${player.balance}"></span> ៛</p>
+    </div>
+</header>
+
+<main>
+    <section class="game-board">
+        <div class="symbol" data-symbol="crab"><img th:src="@{/images/crab.png}" alt="Crab"></div>
+        <div class="symbol" data-symbol="rooster"><img th:src="@{/images/rooster.png}" alt="Rooster"></div>
+        <div class="symbol" data-symbol="fish"><img th:src="@{/images/fish.png}" alt="Fish"></div>
+        <div class="symbol" data-symbol="shrimp"><img th:src="@{/images/shrimp.png}" alt="Shrimp"></div>
+        <div class="symbol" data-symbol="tiger"><img th:src="@{/images/tiger.png}" alt="Tiger"></div>
+        <div class="symbol" data-symbol="gourd"><img th:src="@{/images/gourd.png}" alt="Gourd"></div>
+    </section>
+
+    <section class="betting-area">
+        <h2>Select Your Bet</h2>
+        <div class="notes">
+            <div class="note" data-value="100">៛100</div>
+            <div class="note" data-value="500">៛500</div>
+            <div class="note" data-value="1000">៛1000</div>
+            <div class="note" data-value="5000">៛5000</div>
+        </div>
+        <button id="rollDice">🎲 Roll Dice</button>
+        <button id="resetBet">↩️ Reset Bet</button>
+    </section>
+
+    <section class="results">
+        <h2>Results</h2>
+        <p id="diceResults"></p>
+        <p id="winnings"></p>
+    </section>
+    <a href="/leaderboard"><button>View Leaderboard</button></a>
+
+</main>
+
+<footer><p>© 2025 Khmer Kla Klouk</p></footer>
+</body>
+</html>

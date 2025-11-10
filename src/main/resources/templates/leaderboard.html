@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kla Klouk Leaderboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <h1>🏆 Leaderboard 🏆</h1>
+</header>
+
+<main>
+    <table class="leaderboard-table">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Balance (៛)</th>
+            <th>Total Wins</th>
+            <th>Total Losses</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="player : ${players}">
+            <td th:text="${player.username}"></td>
+            <td th:text="${player.balance}"></td>
+            <td th:text="${player.totalWins}"></td>
+            <td th:text="${player.totalLosses}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/game"><button>Back to Game</button></a>
+</main>
+</body>
+</html>

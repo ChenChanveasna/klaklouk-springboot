@@ -1,0 +1,9 @@
+{
+  "hello12" : {
+    "username" : "hello12",
+    "balance" : 25000,
+    "totalWins" : 1,
+    "totalLosses" : 0,
+    "tempBalance" : 0
+  }
+}
