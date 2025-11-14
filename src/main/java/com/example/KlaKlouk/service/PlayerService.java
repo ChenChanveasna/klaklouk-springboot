@@ -1,8 +1,7 @@
-package com.example.KlaKlouk.service;
+package com.example.klaklouk.service;
 
-import com.example.KlaKlouk.model.Player;
-import com.example.KlaKlouk.repository.PlayerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.klaklouk.model.Player;
+import com.example.klaklouk.repository.PlayerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -10,77 +9,89 @@ import java.util.*;
 @Service
 public class PlayerService {
 
-    private static final List<String> SYMBOLS = List.of("Crab", "Rooster", "Fish", "Shrimp", "Tiger", "Gourd");
+    private final int DEFAULT_BALANCE = 999999999;
+    private final PlayerRepository repository;
+    private final Random random = new Random();
 
-    @Autowired
-    private PlayerRepository playerRepository;
-
-    public Player loginOrCreate(String username) {
-        Player player = playerRepository.getPlayer(username);
-        if (player == null) {
-            player = new Player(username, 10000); // default balance
-            playerRepository.updatePlayer(player);
-        }
-        return player;
+    public PlayerService(PlayerRepository repository) {
+        this.repository = repository;
     }
 
-    public Map<String, Object> playRound(Player player, Map<String, Integer> bets) {
-        Map<String, Object> result = new HashMap<>();
-        Random random = new Random();
+    // --- Get or Create Player ---
+    public Player getOrCreatePlayer(String name) {
+        if (name == null || name.trim().isEmpty()) return null;
+        String key = name.trim().toLowerCase();
+        Player p = repository.getPlayer(name);
+        if (p != null) return p;
 
-        int totalBet = bets.values().stream().mapToInt(Integer::intValue).sum();
-        if (player.getBalance() < totalBet) {
-            result.put("error", "Insufficient balance.");
-            return result;
-        }
+        Player newP = new Player(name.trim(), DEFAULT_BALANCE, 0, 0);
+        repository.save(newP);
+        return newP;
+    }
 
-//        // Deduct immediately
-//        player.setBalance(player.getBalance() - totalBet);
+    // --- Leaderboard Top 5 ---
+    public List<Player> getLeaderboardTop5() {
+        List<Player> players = repository.findAll();
+        players.sort((a, b) -> b.getBalance() - a.getBalance());
+        return players.size() > 5 ? players.subList(0, 5) : players;
+    }
+
+    // --- Roll Dice & Process All Bets ---
+    // bets = Map<symbol, betAmount>
+    public Map<String, Object> rollDice(Player player, Map<String, Integer> bets, int debug) {
+        String[] symbols = {"TIGER", "GOURD", "ROOSTER", "SHRIMP", "CRAB", "FISH"};
+        List<String> diceResult = new ArrayList<>();
 
         // Roll 3 dice
-        List<String> diceResults = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            diceResults.add(SYMBOLS.get(random.nextInt(SYMBOLS.size())));
-        }
-
-        int winnings = 0;
-        for (String symbol : bets.keySet()) {
-            int matchCount = 0;
-            for (String dice : diceResults) {
-                if (dice.equalsIgnoreCase(symbol)) matchCount++;
+//        for (int i = 0; i < 3; i++) {
+//            diceResult.add(symbols[random.nextInt(symbols.length)]);
+//        }
+        diceResult.add("TIGER");
+        diceResult.add("GOURD");
+        diceResult.add("ROOSTER");
+        Map<String, Object> result = new HashMap<>();
+//        result.put("debug from controller player obj hashcode ", debug);
+//        result.put("debug from service player obj hashcode", player.hashCode());
+        result.put("debug player object", player);
+        result.put("debug player initial balance", player.getBalance());
+        // Calculate winnings
+        int totalWin = 0;
+        for (Map.Entry<String, Integer> entry : bets.entrySet()) {
+            String betSymbol = entry.getKey().toUpperCase();
+            int betAmount = entry.getValue();
+//            int matches = diceResult.stream().filter(d -> d.equals(betSymbol)).count();
+            int matches = 0;
+            for (String d : diceResult) {
+                if (d.equals(betSymbol)) {
+                    matches++;
+                }
             }
-
-            if (matchCount > 0) {
-                winnings += bets.get(symbol) * (1 + matchCount);
-            }
-//            int occurrences = Collections.frequency(diceResults, symbol);
-//            if (occurrences > 0) {
-//                winnings += bets.get(symbol) * ( 1 + occurrences);
-//            }
+            int win = matches * betAmount;
+            result.put("debug win value", win);// x1, x2, x3
+            totalWin += win + (matches > 0 ? betAmount : 0); // include initial bet if match
+            result.put("debug total win value", totalWin);
         }
 
-        if (winnings > 0) {
-            player.setBalance(player.getBalance() + winnings);
-            player.setTotalWins(player.getTotalWins() + 1);
-        } else {
-            player.setTotalLosses(player.getTotalLosses() + 1);
-        }
+        // Deduct total bet from balance
+        int totalBet = bets.values().stream().mapToInt(Integer::intValue).sum();
+        result.put("debug total bet value", totalBet);
+        player.setBalance(player.getBalance() - totalBet + totalWin);
+        player.updateHighestBalance(); // update highest balance if needed
+        result.put("debug player balance after calculated", player.getBalance());
+        // Update total wins/losses
+        if (totalWin > 0) player.setTotalWins(player.getTotalWins() + 1);
+        else player.setTotalLosses(player.getTotalLosses() + 1);
 
-        playerRepository.updatePlayer(player);
+        // Save player through repository
+        repository.save(player);
 
-        result.put("diceResults", diceResults);
-        result.put("winnings", winnings);
-        result.put("newBalance", player.getBalance());
+        // Build response
+
+        result.put("diceResult", diceResult);
+        result.put("highest balance", player.getHighestBalance());
+        result.put("balance", player.getBalance());
+        result.put("leaderboard", getLeaderboardTop5());
 
         return result;
-    }
-
-    public void adjustBalance(Player player, int amountChange) {
-        player.setTemp(player.getTempBalance() + amountChange);
-        playerRepository.updatePlayer(player);
-    }
-
-    public Map<String, Player> getAllPlayers() {
-        return playerRepository.getAllPlayers();
     }
 }

@@ -3,49 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <title>Kla Klouk Game</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <script defer th:src="@{/js/game.js}"></script>
+    <link href="/css/tailwind.css" rel="stylesheet">
 </head>
-<body class="game-body">
-<header>
-    <h1 class="title">🎰 Khmer Kla Klouk 🎰</h1>
-    <div class="player-info">
-        <p>Player: <span th:text="${player.username}"></span></p>
-        <p>Balance: <span id="balance" th:text="${player.balance}"></span> ៛</p>
+<body class="bg-yellow-50">
+<div class="flex flex-col h-screen p-4">
+
+    <!-- Leaderboard (Top Right Fixed) -->
+    <div class="fixed top-4 right-4 bg-white p-4 rounded shadow w-64">
+        <h2 class="font-bold mb-2 text-center">Leaderboard (Top 5)</h2>
+        <ul id="leaderboard" class="text-sm">
+            <li th:each="p : ${leaderboard}">
+                <span th:text="${p.name}"></span> - <span th:text="${p.balance}"></span> riel
+            </li>
+        </ul>
     </div>
-</header>
 
-<main>
-    <section class="game-board">
-        <div class="symbol" data-symbol="crab"><img th:src="@{/images/crab.png}" alt="Crab"></div>
-        <div class="symbol" data-symbol="rooster"><img th:src="@{/images/rooster.png}" alt="Rooster"></div>
-        <div class="symbol" data-symbol="fish"><img th:src="@{/images/fish.png}" alt="Fish"></div>
-        <div class="symbol" data-symbol="shrimp"><img th:src="@{/images/shrimp.png}" alt="Shrimp"></div>
-        <div class="symbol" data-symbol="tiger"><img th:src="@{/images/tiger.png}" alt="Tiger"></div>
-        <div class="symbol" data-symbol="gourd"><img th:src="@{/images/gourd.png}" alt="Gourd"></div>
-    </section>
+    <!-- Player Info -->
+    <div class="mb-4 bg-white p-4 rounded shadow w-64">
+        <h3 class="font-medium">Player: <span th:text="${player.name}"></span></h3>
+        <p>Balance: <span id="balance" th:text="${player.balance}"></span> riel</p>
+    </div>
 
-    <section class="betting-area">
-        <h2>Select Your Bet</h2>
-        <div class="notes">
-            <div class="note" data-value="100">៛100</div>
-            <div class="note" data-value="500">៛500</div>
-            <div class="note" data-value="1000">៛1000</div>
-            <div class="note" data-value="5000">៛5000</div>
+    <div class="flex flex-row space-x-6">
+
+        <!-- Symbol Grid -->
+        <div class="grid grid-cols-3 gap-4">
+            <div class="symbol" data-symbol="TIGER">
+                <img src="/images/symbol_tiger.png" alt="Tiger" class="symbol-img cursor-pointer border rounded">
+                <div class="bet-label top hidden">
+                    <span class="bet-amount"></span>
+                </div>
+            </div>
+            <div class="symbol" data-symbol="GOURD">
+                <img src="/images/symbol_gourd.png" alt="Gourd" class="symbol-img cursor-pointer border rounded">
+                <div class="bet-label top hidden">
+                    <span class="bet-amount"></span>
+                </div>
+            </div>
+            <div class="symbol" data-symbol="ROOSTER">
+                <img src="/images/symbol_rooster.png" alt="Rooster" class="symbol-img cursor-pointer border rounded">
+                <div class="bet-label top hidden">
+                    <span class="bet-amount"></span>
+                </div>
+            </div>
+            <div class="symbol" data-symbol="SHRIMP">
+                <img src="/images/symbol_shrimp.png" alt="Shrimp" class="symbol-img cursor-pointer border rounded">
+                <div class="bet-label top hidden">
+                    <span class="bet-amount"></span>
+                </div>
+            </div>
+            <div class="symbol" data-symbol="CRAB">
+                <img src="/images/symbol_crab.png" alt="Crab" class="symbol-img cursor-pointer border rounded">
+                <div class="bet-label top hidden">
+                    <span class="bet-amount"></span>
+                </div>
+            </div>
+            <div class="symbol" data-symbol="FISH">
+                <img src="/images/symbol_fish.png" alt="Fish" class="symbol-img cursor-pointer border rounded">
+                <div class="bet-label top hidden">
+                    <span class="bet-amount"></span>
+                </div>
+            </div>
         </div>
-        <button id="rollDice">🎲 Roll Dice</button>
-        <button id="resetBet">↩️ Reset Bet</button>
-    </section>
 
-    <section class="results">
-        <h2>Results</h2>
-        <p id="diceResults"></p>
-        <p id="winnings"></p>
-    </section>
-    <a href="/leaderboard"><button>View Leaderboard</button></a>
+        <!-- Dice Result Area -->
+        <div class="dice-area bg-white p-4 rounded shadow w-64 flex flex-col items-center justify-center">
+            <h3 class="font-medium mb-2">Dice Result</h3>
+            <div id="dice-result" class="flex space-x-2">
+                <!-- Dice images will be inserted here -->
+            </div>
+        </div>
 
-</main>
+        <!-- Banknotes & Buttons -->
+        <div class="flex flex-col space-y-4">
+            <div class="banknotes flex flex-col space-y-2">
+                <img src="/images/banknote_100.png" alt="100 Riel" class="banknote cursor-pointer" data-value="100">
+                <img src="/images/banknote_500.png" alt="500 Riel" class="banknote cursor-pointer" data-value="500">
+                <img src="/images/banknote_1000.png" alt="1000 Riel" class="banknote cursor-pointer" data-value="1000">
+                <img src="/images/banknote_5000.png" alt="5000 Riel" class="banknote cursor-pointer" data-value="5000">
+                <img src="/images/banknote_10000.png" alt="10000 Riel" class="banknote cursor-pointer" data-value="10000">
+            </div>
+            <div class="buttons flex flex-col space-y-2">
+                <button id="undo-btn" class="bg-gray-400 text-white py-2 rounded hover:bg-gray-500">Undo</button>
+                <button id="roll-btn" class="bg-green-500 text-white py-2 rounded hover:bg-green-600">Roll Dice</button>
+            </div>
+        </div>
 
-<footer><p>© 2025 Khmer Kla Klouk</p></footer>
+    </div>
+</div>
+
+<script>
+    const playerName = /*[[${player.name}]]*/ 'Player1';
+</script>
+<script src="/js/game.js"></script>
 </body>
 </html>

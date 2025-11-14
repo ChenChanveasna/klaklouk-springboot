@@ -1,122 +1,95 @@
-// game.js
+let currentBalance = parseInt(document.getElementById("balance").textContent);
+let bets = {}; // symbol -> bet amount
+let lastBet = null;
+let selectedBanknote = null;
 
-document.addEventListener("DOMContentLoaded", () => {
-    const symbols = document.querySelectorAll(".symbol");
-    const notes = document.querySelectorAll(".note");
-    const balanceEl = document.getElementById("balance");
-    const rollBtn = document.getElementById("rollDice");
-    const resetBtn = document.getElementById("resetBet");
-    const diceResultsEl = document.getElementById("diceResults");
-    const winningsEl = document.getElementById("winnings");
+// Banknote selection
+document.querySelectorAll(".banknote").forEach(note => {
+    note.addEventListener("click", () => {
+        selectedBanknote = parseInt(note.dataset.value);
+        console.log("Selected banknote:", selectedBanknote);
+    });
+});
 
-    let selectedNote = 0;
-    let pendingBets = {}; // mirror session pendingBets
+// Symbol click to place bet
+document.querySelectorAll(".symbol").forEach(symbolDiv => {
+    symbolDiv.addEventListener("click", () => {
+        if (!selectedBanknote) return alert("Select a banknote first!");
+        const symbol = symbolDiv.dataset.symbol;
 
-    // Select note value
-    notes.forEach(note => {
-        note.addEventListener("click", () => {
-            selectedNote = parseInt(note.dataset.value);
-            notes.forEach(n => n.classList.remove("selected"));
-            note.classList.add("selected");
-        });
+        if (currentBalance < selectedBanknote) return alert("Not enough balance!");
+
+        bets[symbol] = (bets[symbol] || 0) + selectedBanknote;
+        currentBalance -= selectedBanknote;
+        lastBet = {symbol: symbol, amount: selectedBanknote};
+
+        document.getElementById("balance").textContent = currentBalance;
+        updateSymbolBetDisplay(symbolDiv, symbol);
+    });
+});
+
+// Update bet amount label on symbol
+function updateSymbolBetDisplay(symbolDiv, symbol) {
+    const label = symbolDiv.querySelector(".bet-label");
+    label.querySelector(".bet-amount").textContent = bets[symbol];
+    label.classList.remove("hidden");
+}
+
+// Undo last bet
+document.getElementById("undo-btn").addEventListener("click", () => {
+    if (!lastBet) return;
+    const {symbol, amount} = lastBet;
+    bets[symbol] -= amount;
+    if (bets[symbol] <= 0) delete bets[symbol];
+    currentBalance += amount;
+    document.getElementById("balance").textContent = currentBalance;
+
+    const symbolDiv = document.querySelector(`.symbol[data-symbol="${symbol}"]`);
+    const label = symbolDiv.querySelector(".bet-label");
+    if (bets[symbol]) {
+        label.querySelector(".bet-amount").textContent = bets[symbol];
+    } else {
+        label.classList.add("hidden");
+    }
+    lastBet = null;
+});
+
+// Roll Dice (send all bets)
+document.getElementById("roll-btn").addEventListener("click", async () => {
+    if (Object.keys(bets).length === 0) return alert("Place at least one bet!");
+
+    const response = await fetch(`/game/result?playerName=${playerName}`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(bets)
     });
 
-    // Place bet on symbol
-    symbols.forEach(symbol => {
-        symbol.addEventListener("click", () => {
-            if (selectedNote <= 0) {
-                alert("Select a note first!");
-                return;
-            }
+    const data = await response.json();
+    currentBalance = data.balance;
+    document.getElementById("balance").textContent = currentBalance;
 
-            const symName = symbol.dataset.symbol;
-
-            fetch("/placeBet", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: `symbol=${symName}&amount=${selectedNote}`
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                    return;
-                }
-
-                balanceEl.textContent = data.newBalance;
-                pendingBets = data.pendingBets;
-
-                // Visual stacking
-                let stackEl = symbol.querySelector(".stack");
-                if (!stackEl) {
-                    stackEl = document.createElement("div");
-                    stackEl.classList.add("stack");
-                    symbol.appendChild(stackEl);
-                }
-                const noteDiv = document.createElement("div");
-                noteDiv.textContent = `៛${selectedNote}`;
-                noteDiv.classList.add("stacked-note");
-                stackEl.appendChild(noteDiv);
-            })
-            .catch(err => console.error(err));
-        });
+    // Update Dice Result
+    const diceContainer = document.getElementById("dice-result");
+    diceContainer.innerHTML = "";
+    data.diceResult.forEach(symbol => {
+        const img = document.createElement("img");
+        img.src = `/images/symbol_${symbol.toLowerCase()}.png`;
+        img.alt = symbol;
+        img.classList.add("w-12", "h-12");
+        diceContainer.appendChild(img);
     });
 
-    // Undo last bet
-    resetBtn.addEventListener("click", () => {
-        fetch("/undoLastBet", { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error);
-                return;
-            }
-
-            balanceEl.textContent = data.newBalance;
-            pendingBets = data.pendingBets;
-
-            // Remove last stacked note visually
-            symbols.forEach(symbol => {
-                const stackEl = symbol.querySelector(".stack");
-                if (stackEl && stackEl.lastChild) {
-                    stackEl.removeChild(stackEl.lastChild);
-                }
-            });
-        })
-        .catch(err => console.error(err));
+    // Update leaderboard
+    const leaderboard = document.getElementById("leaderboard");
+    leaderboard.innerHTML = "";
+    data.leaderboard.forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = `${p.name} - ${p.balance} riel`;
+        leaderboard.appendChild(li);
     });
 
-    // Roll dice
-    rollBtn.addEventListener("click", () => {
-        fetch("/rollDice", { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error);
-                return;
-            }
-
-            balanceEl.textContent = data.newBalance;
-            pendingBets = {};
-
-            // Clear visual stacks
-            symbols.forEach(symbol => {
-                const stackEl = symbol.querySelector(".stack");
-                if (stackEl) stackEl.remove();
-            });
-
-            // Show dice results
-            diceResultsEl.textContent = `Dice Results: ${data.diceResults.join(", ")}`;
-
-            // Show round winnings
-            let roundMsg = [];
-            for (const sym in data.roundResults) {
-                const amt = data.roundResults[sym];
-                if (amt > 0) roundMsg.push(`🎉 ${sym}: +${amt}៛`);
-                else roundMsg.push(`❌ ${sym}: ${amt}៛`);
-            }
-            winningsEl.innerHTML = roundMsg.join("<br>");
-        })
-        .catch(err => console.error(err));
-    });
+    // Clear bets
+    bets = {};
+    lastBet = null;
+    document.querySelectorAll(".bet-label").forEach(label => label.classList.add("hidden"));
 });
