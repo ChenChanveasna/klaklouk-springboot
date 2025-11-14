@@ -1,8 +1,0 @@
-[ {
-  "name" : "Player1",
-  "balance" : 13000,
-  "totalWins" : 3,
-  "totalLosses" : 1,
-  "highestBalance" : 13000,
-  "winRate" : 75.0
-} ]
