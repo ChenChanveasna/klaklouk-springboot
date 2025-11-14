@@ -30,11 +30,11 @@ public class PlayerService {
     }
 
     // --- Leaderboard Top 5 ---
-    public List<Player> getLeaderboardTop5() {
-        List<Player> players = repository.findAll();
-        players.sort((a, b) -> b.getBalance() - a.getBalance());
-        return players.size() > 5 ? players.subList(0, 5) : players;
-    }
+//    public List<Player> getLeaderboardTop5() {
+//        List<Player> players = repository.findAll();
+//        players.sort((a, b) -> b.getBalance() - a.getBalance());
+//        return players.size() > 5 ? players.subList(0, 5) : players;
+//    }
 
     // --- Roll Dice & Process All Bets ---
     // bets = Map<symbol, betAmount>
@@ -90,7 +90,7 @@ public class PlayerService {
         result.put("diceResult", diceResult);
         result.put("highest balance", player.getHighestBalance());
         result.put("balance", player.getBalance());
-        result.put("leaderboard", getLeaderboardTop5());
+//        result.put("leaderboard", getLeaderboardTop5());
 
         return result;
     }
