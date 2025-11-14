@@ -37,7 +37,7 @@ public class GameController {
         Player player = (Player) session.getAttribute("player");
         if (player == null) return "redirect:/login";
         model.addAttribute("player", player);
-        model.addAttribute("leaderboard", service.getLeaderboardTop5());
+//        model.addAttribute("leaderboard", service.getLeaderboardTop5());
         return "game";
     }
 
