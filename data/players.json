@@ -1,0 +1,44 @@
+{
+  "player11" : {
+    "name" : "Player11",
+    "balance" : 10000,
+    "totalWins" : 0,
+    "totalLosses" : 0,
+    "highestBalance" : 10000
+  },
+  "player1" : {
+    "name" : "Player1",
+    "balance" : 10000,
+    "totalWins" : 0,
+    "totalLosses" : 0,
+    "highestBalance" : 10000
+  },
+  "test" : {
+    "name" : "test",
+    "balance" : 10000,
+    "totalWins" : 0,
+    "totalLosses" : 0,
+    "highestBalance" : 10000
+  },
+  "player2" : {
+    "name" : "Player2",
+    "balance" : 10000,
+    "totalWins" : 0,
+    "totalLosses" : 0,
+    "highestBalance" : 10000
+  },
+  "player0" : {
+    "name" : "Player0",
+    "balance" : 10000,
+    "totalWins" : 0,
+    "totalLosses" : 0,
+    "highestBalance" : 10000
+  },
+  "test1" : {
+    "name" : "test1",
+    "balance" : 44000,
+    "totalWins" : 5,
+    "totalLosses" : 1,
+    "highestBalance" : 44000
+  }
+}
