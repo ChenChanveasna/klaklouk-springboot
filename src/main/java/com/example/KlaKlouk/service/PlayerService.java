@@ -143,13 +143,13 @@ public class PlayerService {
             throw new IllegalArgumentException("No bets were submitted.");
         }
 
-        // Roll 3 dice
-//        for (int i = 0; i < 3; i++) {
-//            diceResult.add(symbols[random.nextInt(symbols.length)]);
-//        }
-        diceResult.add("TIGER");
-        diceResult.add("GOURD");
-        diceResult.add("ROOSTER");
+//         Roll 3 dice
+        for (int i = 0; i < 3; i++) {
+            diceResult.add(symbols[random.nextInt(symbols.length)]);
+        }
+//        diceResult.add("TIGER");
+//        diceResult.add("GOURD");
+//        diceResult.add("ROOSTER");
         Map<String, Object> result = new HashMap<>();
 //        result.put("debug from controller player obj hashcode ", debug);
 //        result.put("debug from service player obj hashcode", player.hashCode());
@@ -193,6 +193,9 @@ public class PlayerService {
         result.put("diceResult", diceResult);
         result.put("highest balance", player.getHighestBalance());
         result.put("balance", player.getBalance());
+        result.put("totalWins", player.getTotalWins());
+        result.put("totalLosses", player.getTotalLosses());
+        result.put("winRate", player.getWinRate());
 
         return result;
     }
