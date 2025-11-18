@@ -4,41 +4,71 @@
     "balance" : 10000,
     "totalWins" : 0,
     "totalLosses" : 0,
-    "highestBalance" : 10000
+    "highestBalance" : 10000,
+    "winRate" : 0.0
   },
   "player1" : {
     "name" : "Player1",
     "balance" : 10000,
     "totalWins" : 0,
     "totalLosses" : 0,
-    "highestBalance" : 10000
+    "highestBalance" : 10000,
+    "winRate" : 0.0
   },
   "test" : {
     "name" : "test",
     "balance" : 10000,
     "totalWins" : 0,
     "totalLosses" : 0,
-    "highestBalance" : 10000
+    "highestBalance" : 10000,
+    "winRate" : 0.0
+  },
+  "gmk" : {
+    "name" : "GMK",
+    "balance" : 10000,
+    "totalWins" : 0,
+    "totalLosses" : 0,
+    "highestBalance" : 10000,
+    "winRate" : 0.0
+  },
+  "manet" : {
+    "name" : "Manet",
+    "balance" : 10000,
+    "totalWins" : 0,
+    "totalLosses" : 0,
+    "highestBalance" : 10000,
+    "winRate" : 0.0
   },
   "player2" : {
     "name" : "Player2",
     "balance" : 10000,
     "totalWins" : 0,
     "totalLosses" : 0,
-    "highestBalance" : 10000
+    "highestBalance" : 10000,
+    "winRate" : 0.0
+  },
+  "nha" : {
+    "name" : "Nha",
+    "balance" : 10000,
+    "totalWins" : 0,
+    "totalLosses" : 0,
+    "highestBalance" : 10000,
+    "winRate" : 0.0
   },
   "player0" : {
     "name" : "Player0",
     "balance" : 10000,
     "totalWins" : 0,
     "totalLosses" : 0,
-    "highestBalance" : 10000
+    "highestBalance" : 10000,
+    "winRate" : 0.0
   },
   "test1" : {
     "name" : "test1",
-    "balance" : 44000,
-    "totalWins" : 5,
+    "balance" : 60000,
+    "totalWins" : 18,
     "totalLosses" : 1,
-    "highestBalance" : 44000
+    "highestBalance" : 60000,
+    "winRate" : 94.73684210526315
   }
 }

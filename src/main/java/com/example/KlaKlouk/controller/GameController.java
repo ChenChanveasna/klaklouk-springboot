@@ -48,14 +48,14 @@ public class GameController {
     // --- ROLL DICE (process all bets) ---
     @PostMapping("/game/result")
     @ResponseBody
-    public Map<String, Object> rollDice(@Valid @RequestBody BetRequest betRequest, HttpSession session) {
+    public Map<String, Object> rollDice(@Valid @RequestBody BetRequest betRequest, HttpSession session, Model model) {
         Player player = (Player) session.getAttribute("player");
         if (player == null) return Map.of("error", "Session expired.");
 
-        int debug = player.hashCode(); //test
-
-        Map<String, Object> result = service.rollDice(player, betRequest.getBets(), debug);
+        Map<String, Object> result = service.rollDice(player, betRequest.getBets());
         session.setAttribute("player", player);
+        model.addAttribute("player", player);
+
         return result;
     }
 }

@@ -1,82 +1,3 @@
-//package com.example.klaklouk.repository;
-//
-//import com.example.klaklouk.model.Player;
-//import com.fasterxml.jackson.core.type.TypeReference;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import jakarta.annotation.PostConstruct;
-//import org.springframework.stereotype.Repository;
-//
-//import java.io.File;
-//import java.io.IOException;
-//import java.util.*;
-//
-//@Repository
-//public class PlayerRepository {
-//    private static final String FILE_PATH = "src/main/resources/data/players.json";
-//    private Map<String, Player> players = new HashMap<>();
-//    private final ObjectMapper mapper = new ObjectMapper();
-//
-//    @PostConstruct
-//    public void init() {
-//        loadPlayers();
-//    }
-//
-//    public void loadPlayers() {
-//        System.out.println("LoadPlayer triggered");
-//        try {
-//            File file = new File(FILE_PATH);
-//            System.out.println(file);
-//            System.out.println("Is file exist?"+ file.exists());
-//            if (file.exists()) {
-//                players = mapper.readValue(file, new TypeReference<Map<String, Player>>() {});
-//            } else {
-//                players = new HashMap<>();
-//                saveAll();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-////    public List<Player> findAll() {
-////        try {
-////            File file = new File(FILE_PATH);
-////            if (!file.exists()) return new ArrayList<>();
-////            return mapper.readValue(file, new TypeReference<List<Player>>() {});
-////        } catch (IOException e) {
-////            e.printStackTrace();
-////            return new ArrayList<>();
-////        }
-////    }
-//
-//    //    public void saveAll(List<Player> players) {
-////        try {
-////            File file = new File(FILE_PATH);
-////            file.getParentFile().mkdirs();
-////            mapper.writerWithDefaultPrettyPrinter().writeValue(file, players);
-////        } catch (IOException e) {
-////            e.printStackTrace();
-////        }
-////    }
-//    public void saveAll() {
-//        try {
-//            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILE_PATH), players);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void save(Player player) {
-//        players.put(player.getName(), player);
-//        saveAll();
-//    }
-//
-//    public Player getPlayer(String username) {
-//        return players.get(username);
-//    }
-//
-//}
-
 package com.example.klaklouk.repository;
 
 import com.example.klaklouk.model.Player;
@@ -131,56 +52,56 @@ public class PlayerRepository {
 
     private void loadPlayers() {
         try {
-            if (Files.exists(filePath)) {
-                Map<String, Player> loaded = mapper.readValue(filePath.toFile(), new TypeReference<Map<String, Player>>() {});
-                players.clear();
-                loaded.forEach((k, v) -> players.put(normalizeKey(k), new Player(v)));
-            } else {
-                // Ensure directory exists and create an initial empty file
-                Path parent = filePath.getParent();
-                if (parent != null) Files.createDirectories(parent);
-                saveAll();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load players from " + filePath, e);
-        }
-    }
-
-    public synchronized void saveAll() {
-        try {
+        if (Files.exists(filePath)) {
+            Map<String, Player> loaded = mapper.readValue(filePath.toFile(), new TypeReference<Map<String, Player>>() {});
+            players.clear();
+            loaded.forEach((k, v) -> players.put(normalizeKey(k), new Player(v)));
+        } else {
+            // Ensure directory exists and create an initial empty file
             Path parent = filePath.getParent();
             if (parent != null) Files.createDirectories(parent);
-
-            // Snapshot with defensive copies
-            Map<String, Player> snapshot = new HashMap<>();
-            players.forEach((k, v) -> snapshot.put(k, new Player(v)));
-
-            mapper.writerWithDefaultPrettyPrinter().writeValue(filePath.toFile(), snapshot);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save players to " + filePath, e);
+            saveAll();
         }
+    } catch (IOException e) {
+        throw new RuntimeException("Failed to load players from " + filePath, e);
     }
+}
 
-    public void save(Player player) {
-        if (player == null || player.getName() == null) return;
-        String key = normalizeKey(player.getName());
-        players.put(key, new Player(player)); // store defensive copy
-        saveAll();
-    }
+public synchronized void saveAll() {
+    try {
+        Path parent = filePath.getParent();
+        if (parent != null) Files.createDirectories(parent);
 
-    public Player getPlayer(String username) {
-        if (username == null) return null;
-        Player p = players.get(normalizeKey(username));
-        return p == null ? null : new Player(p); // return defensive copy
-    }
+        // Snapshot with defensive copies
+        Map<String, Player> snapshot = new HashMap<>();
+        players.forEach((k, v) -> snapshot.put(k, new Player(v)));
 
-    public List<Player> findAll() {
-        return players.values().stream()
-                .map(Player::new)
-                .collect(Collectors.toList());
+        mapper.writerWithDefaultPrettyPrinter().writeValue(filePath.toFile(), snapshot);
+    } catch (IOException e) {
+        throw new RuntimeException("Failed to save players to " + filePath, e);
     }
+}
 
-    private String normalizeKey(String s) {
-        return s == null ? null : s.trim().toLowerCase();
-    }
+public void save(Player player) {
+    if (player == null || player.getName() == null) return;
+    String key = normalizeKey(player.getName());
+    players.put(key, new Player(player)); // store defensive copy
+    saveAll();
+}
+
+public Player getPlayer(String username) {
+    if (username == null) return null;
+    Player p = players.get(normalizeKey(username));
+    return p == null ? null : new Player(p); // return defensive copy
+}
+
+//public List<Player> findAll() {
+//    return players.values().stream()
+//            .map(Player::new)
+//            .collect(Collectors.toList());
+//}
+
+private String normalizeKey(String s) {
+    return s == null ? null : s.trim().toLowerCase();
+}
 }

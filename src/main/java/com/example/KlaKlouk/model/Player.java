@@ -16,6 +16,7 @@ public class Player implements Serializable {
     private int totalWins;
     private int totalLosses;
     private int highestBalance;
+    private double winRate;
 
     public Player() {}
 
@@ -57,11 +58,11 @@ public class Player implements Serializable {
         }
     }
 
-//    public double getWinRate() {
-//        int totalGames = totalWins + totalLosses;
-//        if (totalGames == 0) return 0.0;
-//        return ((double) totalWins / totalGames) * 100.0;
-//    }
+    public double getWinRate() {
+        int totalGames = totalWins + totalLosses;
+        if (totalGames == 0) return 0.0;
+        return ((double) totalWins / totalGames) * 100.0;
+    }
 
     @Override
     public boolean equals(Object o) {

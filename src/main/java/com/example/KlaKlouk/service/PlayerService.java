@@ -126,9 +126,16 @@ public class PlayerService {
         repository.save(newP);
         return new Player(newP);
     }
-
-    // bets = Map<symbol, betAmount>
-    public Map<String, Object> rollDice(Player player, Map<String, Integer> bets, int debug) {
+    // --- Reset Game when player balance is 0 ---
+    public synchronized void resetPlayer(Player player) {
+        player.setBalance(DEFAULT_BALANCE);
+        player.setTotalWins(0);
+        player.setTotalLosses(0);
+        player.updateHighestBalance();
+        repository.save(player);
+    }
+    // --- Roll Dice & Process All Bets ---
+    public Map<String, Object> rollDice(Player player, Map<String, Integer> bets) {
         String[] symbols = {"TIGER", "GOURD", "ROOSTER", "SHRIMP", "CRAB", "FISH"};
         List<String> diceResult = new ArrayList<>();
 
@@ -146,8 +153,8 @@ public class PlayerService {
         Map<String, Object> result = new HashMap<>();
 //        result.put("debug from controller player obj hashcode ", debug);
 //        result.put("debug from service player obj hashcode", player.hashCode());
-        result.put("debug player object", player);
-        result.put("debug player initial balance", player.getBalance());
+//        result.put("debug player object", player);
+//        result.put("debug player initial balance", player.getBalance());
         // Calculate winnings
         int totalWin = 0;
         for (Map.Entry<String, Integer> entry : bets.entrySet()) {
@@ -161,9 +168,9 @@ public class PlayerService {
                 }
             }
             int win = matches * betAmount;
-            result.put("debug win value", win);// x1, x2, x3
+//            result.put("debug win value", win);// x1, x2, x3
             totalWin += win + (matches > 0 ? betAmount : 0); // include initial bet if match
-            result.put("debug total win value", totalWin);
+//            result.put("debug total win value", totalWin);
         }
         
         // Deduct total bet from balance
@@ -171,10 +178,10 @@ public class PlayerService {
         if (totalBet > player.getBalance()) {
             throw new IllegalArgumentException("Total bet exceeds your current balance.");
         }
-        result.put("debug total bet value", totalBet);
+//        result.put("debug total bet value", totalBet);
         player.setBalance(player.getBalance() - totalBet + totalWin);
         player.updateHighestBalance(); // update highest balance if needed
-        result.put("debug player balance after calculated", player.getBalance());
+//        result.put("debug player balance after calculated", player.getBalance());
         // Update total wins/losses
         if (totalWin > 0) player.setTotalWins(player.getTotalWins() + 1);
         else player.setTotalLosses(player.getTotalLosses() + 1);
@@ -183,11 +190,9 @@ public class PlayerService {
         repository.save(player);
 
         // Build response
-
         result.put("diceResult", diceResult);
         result.put("highest balance", player.getHighestBalance());
         result.put("balance", player.getBalance());
-//        result.put("leaderboard", getLeaderboardTop5());
 
         return result;
     }
