@@ -17,11 +17,11 @@
   },
   "test" : {
     "name" : "test",
-    "balance" : 10800,
-    "totalWins" : 3,
+    "balance" : 10000,
+    "totalWins" : 0,
     "totalLosses" : 0,
-    "highestBalance" : 11800,
-    "winRate" : 100.0
+    "highestBalance" : 21600,
+    "winRate" : 0.0
   },
   "gmk" : {
     "name" : "GMK",
@@ -65,10 +65,10 @@
   },
   "test1" : {
     "name" : "test1",
-    "balance" : 146100,
-    "totalWins" : 32,
-    "totalLosses" : 5,
+    "balance" : 0,
+    "totalWins" : 44,
+    "totalLosses" : 23,
     "highestBalance" : 156100,
-    "winRate" : 86.48648648648648
+    "winRate" : 65.67164179104478
   }
 }

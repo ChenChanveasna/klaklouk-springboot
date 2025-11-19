@@ -58,4 +58,29 @@ public class GameController {
 
         return result;
     }
+
+    // --- RESET GAME ---
+    @PostMapping("/game/reset")
+    @ResponseBody
+    public Map<String, Object> resetGame(HttpSession session) {
+        Player player = (Player) session.getAttribute("player");
+        if (player == null) {
+            return Map.of("error", "Session expired.");
+        }
+
+        // use your new service method
+        service.resetPlayer(player);
+        session.setAttribute("player", player);
+
+        // return updated player info so frontend can refresh the UI
+        return Map.of(
+                "name", player.getName(),
+                "balance", player.getBalance(),
+                "totalWins", player.getTotalWins(),
+                "totalLosses", player.getTotalLosses(),
+                "highestBalance", player.getHighestBalance(),
+                "winRate", player.getWinRate()
+        );
+    }
+
 }
