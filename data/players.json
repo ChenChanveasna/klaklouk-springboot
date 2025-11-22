@@ -7,6 +7,14 @@
     "highestBalance" : 10000,
     "winRate" : 0.0
   },
+  "tes" : {
+    "name" : "tes",
+    "balance" : 10000,
+    "totalWins" : 0,
+    "totalLosses" : 0,
+    "highestBalance" : 10000,
+    "winRate" : 0.0
+  },
   "player1" : {
     "name" : "Player1",
     "balance" : 10000,
@@ -17,11 +25,11 @@
   },
   "test" : {
     "name" : "test",
-    "balance" : 10000,
-    "totalWins" : 0,
-    "totalLosses" : 0,
-    "highestBalance" : 21600,
-    "winRate" : 0.0
+    "balance" : 3200,
+    "totalWins" : 17,
+    "totalLosses" : 5,
+    "highestBalance" : 42300,
+    "winRate" : 77.27272727272727
   },
   "gmk" : {
     "name" : "GMK",
@@ -38,6 +46,14 @@
     "totalLosses" : 0,
     "highestBalance" : 10000,
     "winRate" : 0.0
+  },
+  "t" : {
+    "name" : "t",
+    "balance" : 30900,
+    "totalWins" : 7,
+    "totalLosses" : 2,
+    "highestBalance" : 30900,
+    "winRate" : 77.77777777777779
   },
   "player2" : {
     "name" : "Player2",

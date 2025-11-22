@@ -12,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Repository
 public class PlayerRepository {
@@ -20,14 +19,15 @@ public class PlayerRepository {
     private final Map<String, Player> players = new ConcurrentHashMap<>();
     private final ObjectMapper mapper = new ObjectMapper();
 
+    // Constructor to determine file path
     public PlayerRepository(@Value("${players.file:}") String configuredPath) {
-        if (configuredPath != null && !configuredPath.isBlank()) {
+        if (configuredPath != null && !configuredPath.isBlank()) { // Use configured path if provided
             filePath = Path.of(configuredPath);
         } else {
             String appData = System.getenv("APPDATA");
             if (appData != null && !appData.isBlank()) {
                 filePath = Path.of(appData, "klaklouk", "players.json");
-            } else {
+            } else { // fallback to user home or current directory
                 String userHome = System.getProperty("user.home");
                 if (userHome != null && !userHome.isBlank()) {
                     filePath = Path.of(userHome, ".klaklouk", "players.json");
@@ -94,12 +94,6 @@ public Player getPlayer(String username) {
     Player p = players.get(normalizeKey(username));
     return p == null ? null : new Player(p); // return defensive copy
 }
-
-//public List<Player> findAll() {
-//    return players.values().stream()
-//            .map(Player::new)
-//            .collect(Collectors.toList());
-//}
 
 private String normalizeKey(String s) {
     return s == null ? null : s.trim().toLowerCase();

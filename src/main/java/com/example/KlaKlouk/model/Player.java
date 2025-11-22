@@ -16,7 +16,6 @@ public class Player implements Serializable {
     private int totalWins;
     private int totalLosses;
     private int highestBalance;
-    private double winRate;
 
     public Player() {}
 
