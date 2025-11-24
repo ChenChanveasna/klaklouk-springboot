@@ -1,6 +1,6 @@
 # 🎲 Kla-Klok Spring Boot Game
 
-A single-player traditional Khmer dice betting game built with **Java Spring Boot**, featuring simple **HTML/CSS frontend** and **JSON-based data persistence**.
+A single-player traditional Khmer dice betting game built with **Java Spring Boot**, featuring simple **HTML/CSS/JS frontend** and **JSON-based data persistence**.
 
 ---
 
@@ -11,7 +11,7 @@ A single-player traditional Khmer dice betting game built with **Java Spring Boo
 - 🎲 **Randomized dice results** — uses Java’s `Random` for fair outcomes.
 - 💰 **Betting system** — player places bets on six symbols.
 - 🧠 **Game logic handled by models and services** (OOP-focused).
-- 🌐 **Simple frontend** — clean, static HTML/CSS interface.
+- 🌐 **Simple frontend** — clean interface using HTML, Tailwind CSS, and JS
 - ⚙️ **Spring Boot backend** — lightweight REST structure for easy scalability.
 
 ---
@@ -21,16 +21,16 @@ A single-player traditional Khmer dice betting game built with **Java Spring Boo
 | Layer           |      Technology       |
 |-----------------|-----------------------|
 | Backend         | Java 21, Spring Boot  |
-| Frontend        | HTML, CSS             |
+| Frontend        | HTML, Tailwind Css, JS|
 | Data Storage    | JSON (no DB required) |
-| Build Tool      | Maven                 |
+| Build Tool      | Gradle                |
 | Version Control | Git + GitHub          |
 
 ---
 
 ## Requirements
 - Java JDK 17 or higher (tested on JDK 21)
-- Gradle 8.x (if using Gradle) or Maven 3.x (if using Maven)
+- Gradle 8.x (if using Gradle)
 - IntelliJ IDEA or any Java IDE
 
 ---
@@ -43,14 +43,9 @@ A single-player traditional Khmer dice betting game built with **Java Spring Boo
 ```/bin/bash
 ./gradlew build
 ```
--Using Maven:
-```/bin/bash
-mvn clean install
-```
 4. Run the application:
 ```/bin/bash
-./gradlew bootRun    # Gradle
-mvn spring-boot:run  # Maven
+./gradlew bootRun    # Gradle  
 ```
 
 ## Data Persistence
